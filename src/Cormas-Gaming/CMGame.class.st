@@ -15,6 +15,19 @@ CMGame >> initialize [
 	server := CMGameHttpServer new.
 ]
 
+{ #category : 'as yet unclassified' }
+CMGame >> phone1Clicked [
+
+	Transcript
+		show: 'CMGame reacting to Phone 1!';
+		cr
+]
+
+{ #category : 'as yet unclassified' }
+CMGame >> phone2Clicked [
+	Transcript show: 'CMGame reacting to Phone 2!'; cr.
+]
+
 { #category : 'running' }
 CMGame >> runStep [
 
