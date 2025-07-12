@@ -3,11 +3,27 @@ Class {
 	#superclass : 'CMSimulation',
 	#instVars : [
 		'server',
-		'players'
+		'players',
+		'pendingEvents',
+		'submittedThisRound',
+		'currentRound',
+		'state'
 	],
 	#category : 'Cormas-Gaming',
 	#package : 'Cormas-Gaming'
 }
+
+{ #category : 'initialization' }
+CMGame >> addEvent: anEvent [
+
+	pendingEvents add: anEvent
+]
+
+{ #category : 'initialization' }
+CMGame >> allPlayersSubmitted [
+
+	^ submittedThisRound size = state activePlayers size.
+]
 
 { #category : 'initialization' }
 CMGame >> assignRole: aRole to: anIP [
@@ -16,10 +32,51 @@ CMGame >> assignRole: aRole to: anIP [
 ]
 
 { #category : 'initialization' }
+CMGame >> currentStatus [
+	^ 'Round: ', state round asString,
+		' | Players: ', state activePlayers size asString,
+		' | Timer: ', state timer asString.
+]
+
+{ #category : 'initialization' }
+CMGame >> decrementTimer [
+	state timer: state timer - 1.
+]
+
+{ #category : 'initialization' }
+CMGame >> hasPlayerSubmitted: ip [
+
+	^ submittedThisRound includes: ip
+]
+
+{ #category : 'initialization' }
 CMGame >> initialize [
 
 	super initialize.
 	server := CMGameHttpServer new.
+	players := Dictionary new.
+	pendingEvents := OrderedCollection new.
+	submittedThisRound := Set new.
+	currentRound := 1.
+	state := CMState new.
+]
+
+{ #category : 'initialization' }
+CMGame >> isGameOver [
+
+	^ state round > 5
+]
+
+{ #category : 'initialization' }
+CMGame >> isTimerExpired [
+
+	^ state timer <= 0
+]
+
+{ #category : 'initialization' }
+CMGame >> markSubmitted: ip [
+
+	submittedThisRound add: ip
 ]
 
 { #category : 'as yet unclassified' }
@@ -35,9 +92,54 @@ CMGame >> phone2Clicked [
 	Transcript show: 'CMGame reacting to Phone 2!'; cr.
 ]
 
+{ #category : 'initialization' }
+CMGame >> processPendingEvents [
+	pendingEvents do: [ :ev |
+		Transcript show: 'Processing event: ', ev printString; cr.
+		"TODO: implement game logic per event"
+	].
+	pendingEvents := OrderedCollection new.
+]
+
+{ #category : 'initialization' }
+CMGame >> resetSubmittedPlayers [
+
+	submittedThisRound := Set new.
+]
+
+{ #category : 'initialization' }
+CMGame >> resetTimer [
+	state timer: 60.
+]
+
+{ #category : 'initialization' }
+CMGame >> restartGame [
+
+	state := CMState new.
+	players := Dictionary new.
+	submittedThisRound := Set new.
+	pendingEvents := OrderedCollection new
+]
+
+{ #category : 'as yet unclassified' }
+CMGame >> roleFor: ip [
+    ^ players at: ip ifAbsent: [ 'unknown' ].
+
+]
+
 { #category : 'running' }
 CMGame >> runStep [
 
 	super runStep.
 	"do something else"
+]
+
+{ #category : 'initialization' }
+CMGame >> startNextRound [
+
+	self resetSubmittedPlayers.
+	state round: state round + 1.
+	Transcript
+		show: 'Starting round ' , state round asString;
+		cr.
 ]

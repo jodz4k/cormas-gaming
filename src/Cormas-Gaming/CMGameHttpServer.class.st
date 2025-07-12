@@ -289,13 +289,31 @@ CMGameHttpServer >> start2 [
 			response entity: (ZnEntity html: self harvesterPageHtml) ].
 
 	delegate map: '/game/parkmanager' to: [ :request :response |
-		response entity: (ZnEntity html: self parkManagerPageHtml) ].
+			| ip |
+			ip := self clientIPAddressFrom: request.
+			game uniqueInstance assignRole: 'parkmanager' to: ip.
+			response entity: (ZnEntity html: self parkManagerPageHtml) ].
 
 	delegate map: '/style.css' to: [ :request :response |
 			| entity |
 			entity := ZnEntity text: self gameCss.
 			entity contentType: ZnMimeType textCss.
 			response entity: entity ].
+		
+	delegate map: '/click' to: [ :request :response |
+	| ip json role cells event |
+	ip := self clientIPAddressFrom: request.
+	json := NeoJSONReader fromString: request entity contents.
+	role := json at: 'role'.
+	cells := json at: 'cells'.
+
+	event := CMClickEvent new.
+	event ip: ip; role: role; cells: cells.
+
+	game addEvent: event.
+
+	response entity: (ZnEntity text: 'Click registered') 
+].
 
 	(ZnServer startDefaultOn: 9090)
 		logToTranscript;
