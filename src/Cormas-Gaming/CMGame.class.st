@@ -2,11 +2,18 @@ Class {
 	#name : 'CMGame',
 	#superclass : 'CMSimulation',
 	#instVars : [
-		'server'
+		'server',
+		'players'
 	],
 	#category : 'Cormas-Gaming',
 	#package : 'Cormas-Gaming'
 }
+
+{ #category : 'initialization' }
+CMGame >> assignRole: aRole to: anIP [
+  players at: anIP put: aRole.
+
+]
 
 { #category : 'initialization' }
 CMGame >> initialize [
