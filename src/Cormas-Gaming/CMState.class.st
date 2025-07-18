@@ -16,6 +16,12 @@ CMState >> activePlayers [
 	^ activePlayers 
 ]
 
+{ #category : 'accessing' }
+CMState >> addActivePlayers: ipCollection [
+
+	activePlayers addAll: ipCollection
+]
+
 { #category : 'initialization' }
 CMState >> initialize [
 
@@ -35,4 +41,16 @@ CMState >> round [
 CMState >> round: aNumber [
 
 	round := aNumber
+]
+
+{ #category : 'accessing' }
+CMState >> timer [
+
+	^ timer
+]
+
+{ #category : 'accessing' }
+CMState >> timer: aNumber [
+
+	timer := aNumber
 ]

@@ -141,6 +141,13 @@ CMGameHttpServer >> homePageHtml [
 	</form></body></html>'
 ]
 
+{ #category : 'private' }
+CMGameHttpServer >> initialize [
+
+	super initialize.
+	game := CMGame new.
+]
+
 { #category : 'html' }
 CMGameHttpServer >> parkManagerPageHtml [
 
@@ -285,13 +292,13 @@ CMGameHttpServer >> start2 [
 	delegate map: '/game/harvester' to: [ :request :response |
 			| ip |
 			ip := self clientIPAddressFrom: request.
-			game uniqueInstance assignRole: 'harvester' to: ip.
+			game assignRole: 'harvester' to: ip.
 			response entity: (ZnEntity html: self harvesterPageHtml) ].
 
 	delegate map: '/game/parkmanager' to: [ :request :response |
 			| ip |
 			ip := self clientIPAddressFrom: request.
-			game uniqueInstance assignRole: 'parkmanager' to: ip.
+			game assignRole: 'parkmanager' to: ip.
 			response entity: (ZnEntity html: self parkManagerPageHtml) ].
 
 	delegate map: '/style.css' to: [ :request :response |
@@ -299,21 +306,39 @@ CMGameHttpServer >> start2 [
 			entity := ZnEntity text: self gameCss.
 			entity contentType: ZnMimeType textCss.
 			response entity: entity ].
-		
+
+	delegate map: '/submit' to: [ :request :response |
+			| ip json role |
+			ip := self clientIPAddressFrom: request.
+			json := NeoJSONReader fromString: request entity contents.
+			role := json at: 'role'.
+			game markSubmitted: ip.
+
+			game allPlayersSubmitted ifTrue: [
+					Transcript
+						show: 'All players submitted. Advancing round...';
+						cr.
+					game processPendingEvents.
+					game startNextRound ].
+			game currentStatus.
+			response entity: (ZnEntity text: 'Submission received') ].
+
 	delegate map: '/click' to: [ :request :response |
-	| ip json role cells event |
-	ip := self clientIPAddressFrom: request.
-	json := NeoJSONReader fromString: request entity contents.
-	role := json at: 'role'.
-	cells := json at: 'cells'.
+			| ip json role cells event |
+			ip := self clientIPAddressFrom: request.
+			json := NeoJSONReader fromString: request entity contents.
+			role := json at: 'role'.
+			cells := json at: 'cells'.
 
-	event := CMClickEvent new.
-	event ip: ip; role: role; cells: cells.
-
-	game addEvent: event.
-
-	response entity: (ZnEntity text: 'Click registered') 
-].
+			event := CMClickEvent new.
+			event
+				ip: ip;
+				role: role;
+				cells: cells.
+			self halt. 
+			game addEvent: event.
+			game currentStatus.
+			response entity: (ZnEntity text: 'Click registered') ].
 
 	(ZnServer startDefaultOn: 9090)
 		logToTranscript;

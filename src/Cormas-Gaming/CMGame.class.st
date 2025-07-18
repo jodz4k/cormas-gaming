@@ -31,6 +31,18 @@ CMGame >> assignRole: aRole to: anIP [
 
 ]
 
+{ #category : 'accessing' }
+CMGame >> currentRound [
+
+	^ currentRound
+]
+
+{ #category : 'accessing' }
+CMGame >> currentRound: anObject [
+
+	currentRound := anObject
+]
+
 { #category : 'initialization' }
 CMGame >> currentStatus [
 	^ 'Round: ', state round asString,
@@ -53,7 +65,6 @@ CMGame >> hasPlayerSubmitted: ip [
 CMGame >> initialize [
 
 	super initialize.
-	server := CMGameHttpServer new.
 	players := Dictionary new.
 	pendingEvents := OrderedCollection new.
 	submittedThisRound := Set new.
@@ -68,6 +79,12 @@ CMGame >> isGameOver [
 ]
 
 { #category : 'initialization' }
+CMGame >> isPlayerActive: ip [
+
+	^ state activePlayers includes: ip
+]
+
+{ #category : 'initialization' }
 CMGame >> isTimerExpired [
 
 	^ state timer <= 0
@@ -77,6 +94,18 @@ CMGame >> isTimerExpired [
 CMGame >> markSubmitted: ip [
 
 	submittedThisRound add: ip
+]
+
+{ #category : 'accessing' }
+CMGame >> pendingEvents [
+
+	^ pendingEvents
+]
+
+{ #category : 'accessing' }
+CMGame >> pendingEvents: anObject [
+
+	pendingEvents := anObject
 ]
 
 { #category : 'as yet unclassified' }
@@ -90,6 +119,18 @@ CMGame >> phone1Clicked [
 { #category : 'as yet unclassified' }
 CMGame >> phone2Clicked [
 	Transcript show: 'CMGame reacting to Phone 2!'; cr.
+]
+
+{ #category : 'accessing' }
+CMGame >> players [
+
+	^ players
+]
+
+{ #category : 'accessing' }
+CMGame >> players: anObject [
+
+	players := anObject
 ]
 
 { #category : 'initialization' }
@@ -134,6 +175,18 @@ CMGame >> runStep [
 	"do something else"
 ]
 
+{ #category : 'accessing' }
+CMGame >> server [
+
+	^ server
+]
+
+{ #category : 'accessing' }
+CMGame >> server: anObject [
+
+	server := anObject
+]
+
 { #category : 'initialization' }
 CMGame >> startNextRound [
 
@@ -142,4 +195,28 @@ CMGame >> startNextRound [
 	Transcript
 		show: 'Starting round ' , state round asString;
 		cr.
+]
+
+{ #category : 'accessing' }
+CMGame >> state [
+
+	^ state
+]
+
+{ #category : 'accessing' }
+CMGame >> state: anObject [
+
+	state := anObject
+]
+
+{ #category : 'accessing' }
+CMGame >> submittedThisRound [
+
+	^ submittedThisRound
+]
+
+{ #category : 'accessing' }
+CMGame >> submittedThisRound: anObject [
+
+	submittedThisRound := anObject
 ]
