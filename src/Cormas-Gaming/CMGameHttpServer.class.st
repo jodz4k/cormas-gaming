@@ -335,7 +335,6 @@ CMGameHttpServer >> start2 [
 				ip: ip;
 				role: role;
 				cells: cells.
-			self halt. 
 			game addEvent: event.
 			game currentStatus.
 			response entity: (ZnEntity text: 'Click registered') ].
