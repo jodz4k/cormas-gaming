@@ -2,7 +2,8 @@ Class {
 	#name : 'CMGameTest',
 	#superclass : 'TestCase',
 	#instVars : [
-		'game'
+		'game',
+		'server'
 	],
 	#category : 'Cormas-Gaming-Tests',
 	#package : 'Cormas-Gaming-Tests'
@@ -13,6 +14,14 @@ CMGameTest >> setUp [
 
 	super setUp.
 	game := CMGame new.
+	
+]
+
+{ #category : 'running' }
+CMGameTest >> tearDown [
+
+	
+	super tearDown
 ]
 
 { #category : 'running' }
