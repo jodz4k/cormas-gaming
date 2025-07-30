@@ -40,7 +40,7 @@ CMGameHttpServerTest >> testClickRoute [
         method: 'POST';
         contentType: ZnMimeType applicationJson;
         yourself).
-	self halt.
+
     self assert: clickResponse isSuccess.
     self assert: (clickResponse contents includesSubstring: 'Click registered').
 ]
