@@ -15,7 +15,7 @@ CMGameHttpServerTest >> setUp [
 
 	super setUp.
 	server := CMGameHttpServer new.
-	server start2.
+	server start.
 	(Delay forSeconds: 1) wait.
 ]
 
