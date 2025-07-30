@@ -26,6 +26,25 @@ CMGameHttpServerTest >> tearDown [
 	super tearDown
 ]
 
+{ #category : 'running' }
+CMGameHttpServerTest >> testClickRoute [
+    | json clickResponse |
+
+    json := NeoJSONObject new.
+    json at: 'role' put: 'harvester'.
+    json at: 'cells' put: #('0-0' '1-1').
+
+    clickResponse := (ZnClient new
+        url: 'http://localhost:9090/click';
+        entity: (ZnEntity text: (NeoJSONWriter toString: json));
+        method: 'POST';
+        contentType: ZnMimeType applicationJson;
+        yourself).
+	self halt.
+    self assert: clickResponse isSuccess.
+    self assert: (clickResponse contents includesSubstring: 'Click registered').
+]
+
 { #category : 'tests' }
 CMGameHttpServerTest >> testClientIPAddressFrom [
 
@@ -60,6 +79,19 @@ CMGameHttpServerTest >> testGameCssContainsBasicRules [
 	self assert: (css includesSubstring: 'font-family').
 	self assert: (css includesSubstring: '#grid').
 	self assert: (css includesSubstring: '.cell')
+]
+
+{ #category : 'running' }
+CMGameHttpServerTest >> testGetGamePage [
+
+    | response |
+    response := (ZnClient new
+        url: 'http://localhost:9090/game';
+        get;
+        yourself).
+
+    self assert: response isSuccess.
+    self assert: (response entity contents includesSubstring: 'What role are you?').
 ]
 
 { #category : 'running' }
