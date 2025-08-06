@@ -1,6 +1,6 @@
 Class {
 	#name : 'CMClickEvent',
-	#superclass : 'CMSimulation',
+	#superclass : 'Object',
 	#instVars : [
 		'ip',
 		'role',
