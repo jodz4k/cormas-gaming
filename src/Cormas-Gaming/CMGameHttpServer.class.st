@@ -16,6 +16,89 @@ CMGameHttpServer >> clientIPAddressFrom: aRequest [
 		
 ]
 
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegateClickEvent [
+
+	 ^ [ :request :response |
+			| ip json role cells event |
+			ip := self clientIPAddressFrom: request.
+			json := STONJSON fromString: request entity contents.
+			role := json at: 'role'.
+			cells := json at: 'cells'.
+
+			event := CMClickEvent new.
+			event
+				ip: ip;
+				role: role;
+				cells: cells.
+			game addEvent: event.
+			game currentStatus.
+			response entity: (ZnEntity text: 'Click registered') ]
+]
+
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegateCss [
+
+	 ^ [ :request :response |
+			| entity |
+			entity := ZnEntity text: self gameCss.
+			entity contentType: ZnMimeType textCss.
+			response entity: entity ]
+]
+
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegateHarvesterPage [
+
+	 ^ [ :request :response |
+			| ip |
+			ip := self clientIPAddressFrom: request.
+			game assignRole: 'harvester' to: ip.
+			response entity: (ZnEntity html: self harvesterPageHtml) ].
+]
+
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegateHomePage [
+
+	 ^ [ :request :response |
+		response entity: (ZnEntity html: self homePageHtml) ].
+]
+
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegateParkManagerPage [
+
+	 ^ [ :request :response |
+			| ip |
+			ip := self clientIPAddressFrom: request.
+			game assignRole: 'parkmanager' to: ip.
+			response entity: (ZnEntity html: self parkManagerPageHtml) ]
+]
+
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegatePlayPage [
+
+	 ^ [ :request :response |
+		response entity: (ZnEntity html: self roleSelectionPageHtml) ]
+]
+
+{ #category : 'as yet unclassified' }
+CMGameHttpServer >> delegateSubmitEvent [
+
+	 ^ [ :request :response |
+			| ip json role |
+			ip := self clientIPAddressFrom: request.
+			json := STONJSON fromString: request entity contents.
+			role := json at: 'role'.
+			game markSubmitted: ip.
+			game allPlayersSubmitted ifTrue: [
+					Transcript
+						show: 'All players submitted. Advancing round...';
+						cr.
+					game processPendingEvents.
+					game startNextRound ].
+			game currentStatus.
+			response entity: (ZnEntity text: 'Submission received') ]
+]
+
 { #category : 'html' }
 CMGameHttpServer >> gameCss [
 	^ 'body {
@@ -243,61 +326,19 @@ CMGameHttpServer >> start [
 	ZnServer default ifNotNil: [ ZnServer stopDefault ].
 	delegate := ZnDispatcherDelegate new.
 
-	delegate map: '/home' to: [ :request :response |
-		response entity: (ZnEntity html: self homePageHtml) ].
+	delegate map: '/home' to: self delegateHomePage.
 
-	delegate map: '/game' to: [ :request :response |
-		response entity: (ZnEntity html: self roleSelectionPageHtml) ].
+	delegate map: '/game' to: self delegatePlayPage.
 
-	delegate map: '/game/harvester' to: [ :request :response |
-			| ip |
-			ip := self clientIPAddressFrom: request.
-			game assignRole: 'harvester' to: ip.
-			response entity: (ZnEntity html: self harvesterPageHtml) ].
+	delegate map: '/game/harvester' to: self delegateHarvesterPage.
 
-	delegate map: '/game/parkmanager' to: [ :request :response |
-			| ip |
-			ip := self clientIPAddressFrom: request.
-			game assignRole: 'parkmanager' to: ip.
-			response entity: (ZnEntity html: self parkManagerPageHtml) ].
+	delegate map: '/game/parkmanager' to: self delegateParkManagerPage.
 
-	delegate map: '/style.css' to: [ :request :response |
-			| entity |
-			entity := ZnEntity text: self gameCss.
-			entity contentType: ZnMimeType textCss.
-			response entity: entity ].
+	delegate map: '/style.css' to: self delegateCss.
+	
+	delegate map: '/submit' to: self delegateSubmitEvent.
 
-	delegate map: '/submit' to: [ :request :response |
-			| ip json role |
-			ip := self clientIPAddressFrom: request.
-			json := NeoJSONReader fromString: request entity contents.
-			role := json at: 'role'.
-			game markSubmitted: ip.
-
-			game allPlayersSubmitted ifTrue: [
-					Transcript
-						show: 'All players submitted. Advancing round...';
-						cr.
-					game processPendingEvents.
-					game startNextRound ].
-			game currentStatus.
-			response entity: (ZnEntity text: 'Submission received') ].
-
-	delegate map: '/click' to: [ :request :response |
-			| ip json role cells event |
-			ip := self clientIPAddressFrom: request.
-			json := NeoJSONReader fromString: request entity contents.
-			role := json at: 'role'.
-			cells := json at: 'cells'.
-
-			event := CMClickEvent new.
-			event
-				ip: ip;
-				role: role;
-				cells: cells.
-			game addEvent: event.
-			game currentStatus.
-			response entity: (ZnEntity text: 'Click registered') ].
+	delegate map: '/click' to: self delegateClickEvent.
 
 	(ZnServer startDefaultOn: 9090)
 		logToTranscript;
