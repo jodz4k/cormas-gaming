@@ -13,8 +13,7 @@ BaselineOfCormasGaming >> baseline: spec [
 	spec for: #common do: [
 
 		spec
-			package: 'Cormas-Gaming'
-			with: [ spec requires: #('Cormas-Core') ];
+			package: 'Cormas-Gaming';
 		
 			package: 'Cormas-Gaming-Tests'
 			with: [ spec requires: #('Cormas-Gaming') ] ].
