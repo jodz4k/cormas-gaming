@@ -115,4 +115,4 @@ Encapsulates a player's action during a turn (e.g., selected cells).
 2. In a workspace, run:
 
 ```smalltalk
-CMGameHttpServer new start2.
+CMGameHttpServer new start.
