@@ -1,19 +1,5 @@
 # Fork of cormas-gaming, ESUG project
-Cormas architecture extension which is meant to add support for serious games by implementation of serious game: "Planet C, play again?". 
-
-# Loading project 
-
-Before loading **CormasGaming**, you first need to install **Cormas** into your Pharo image.  
-You can find instructions and download links on the official [Cormas website](https://cormas.org/#/).  
-
-Once Cormas is installed, load **CormasGaming** with:  
-
-```st
-Metacello new
-  baseline: 'CormasGaming';
-  repository: 'github://cormas/cormas-gaming:main';
-  load
-```
+Cormas architecture extension which is meant to add support for serious games such as "Planet C, play again?". 
 
 # Short introduction
 
@@ -26,12 +12,36 @@ All of the products which become out of the project and future work is presented
 
 ---
 
+# Loading project 
 
-## Running the Server
+Before loading **CormasGaming**, you first need to install **Cormas** into your Pharo image.  
+You can find instructions and download links on the official [Cormas website](https://cormas.org/#/).  
 
-1. Open the Pharo image with all project classes loaded.
+Once Cormas is installed, load **CormasGaming** with:  
 
-2. In a workspace, run:
+```smalltalk
+Metacello new
+  baseline: 'CormasGaming';
+  repository: 'github://cormas/cormas-gaming:main';
+  load
+```
+
+## Running the Server  
+
+1. Open the Pharo image with all project classes loaded.  
+
+2. In a Playground, run:  
 
 ```smalltalk
 CMGameHttpServer new start.
+```
+And if you want to have a transcript of the server responses, run:
+
+```smalltalk
+Transcript open.
+```
+After that, open your web browser and go to:
+
+http://localhost:9090/home
+
+
