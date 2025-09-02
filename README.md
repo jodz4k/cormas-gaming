@@ -1,6 +1,13 @@
 # Fork of cormas-gaming, ESUG project
 Cormas architecture extension which is meant to add support for serious games by implementation of serious game: "Planet C, play again?". 
 
+# Loading project 
+
+Before loading **CormasGaming**, you first need to install **Cormas** into your Pharo image.  
+You can find instructions and download links on the official [Cormas website](https://cormas.org/#/).  
+
+Once Cormas is installed, load **CormasGaming** with:  
+
 ```st
 Metacello new
   baseline: 'CormasGaming';
