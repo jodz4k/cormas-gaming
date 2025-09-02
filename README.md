@@ -42,8 +42,14 @@ And if you want to have a transcript of the server responses, run:
 ```smalltalk
 Transcript open.
 ```
+
 After that, open your web browser and go to:
 
 http://localhost:9090/home
 
+To stop the server write following code in playground:
+
+```smalltalk
+CMGameHttpServer stop.
+```
 
