@@ -10,6 +10,8 @@ Cormas architecture extension which is meant to add support for serious games su
 Bigger explanation of the background can be found on Wiki on this link: [Introduction](https://github.com/jodz4k/cormas-gaming/wiki/Introduction).
 All of the products which become out of the project and future work is presented here [Wiki](https://github.com/jodz4k/cormas-gaming/wiki).
 
+Main contribution is MVP of playable architecture and research paper which can be found on this link: add link.
+
 ---
 
 # Loading project 
